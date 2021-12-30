@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://kit.fontawesome.com/e71f8bf7e9.js" crossorigin="anonymous"></script>
+    <link rel="icon" href="./logo.png">
+    <link rel="stylesheet" href="reset.css">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;700&display=swap" rel="stylesheet">
+    <title>Library 📕</title>
+</head>
+<body>
+    <div class="form-container">
+        <form class="form">
+            <h1>New Book</h1>
+            <div class="form-main-content">
+                <label for="title">Title</label>
+                <input type="text" placeholder="Enter Title" name="title">
+    
+                <label for="author">Author</label>
+                <input type="text" placeholder="Enter Author" name="author">
+            
+                <label for="pages">Pages</label>
+                <input type="number" placeholder="Enter Pages" name="pages">
+                
+                <div class="read-container">
+                    <input class="readChoice" type="radio" name="readChoice" value="read">
+                    <p>Read</p>
+                </div>
+                
+                <div class="read-container">
+                    <input class="readChoice" type="radio" name="readChoice" value="unread">
+                    <p>Unread</p>
+                </div>
+            </div>
+            <div class="submit-container">
+                <button class="submit-btn" type="submit">Submit</button>
+                <button class="cancel-btn" type="submit">Cancel</button>
+            </div>
+        </form>
+    </div>
+    <main>
+        <header>
+            <h1>The Library</h1>
+        </header>
+        <div class="add-book">
+            <button class="add-book-btn">Add Book</button>
+        </div>
+        <div class="alert">
+            <p class="alert-msg"></p>
+        </div>
+        <div class="bookshelf">
+            <div class="row row-1"></div>
+            <div class="row row-2"></div>
+            <div class="row row-3"></div>
+        </div>
+        <script type="text/javascript" src="index.js"></script>
+    </main>
+</body>
+</html>
