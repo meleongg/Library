@@ -164,6 +164,15 @@ button {
     .bookshelf {
         width: 80%;
     }
+
+    .form {
+        width: 60%;
+    }
+
+    .form-main-content {
+        row-gap: 8px;
+        column-gap: 10px;
+    }
 }
 
 @media screen and (max-width: 480px) {
@@ -177,6 +186,15 @@ button {
 
     .bookshelf {
         width: 80%;
+    }
+
+    .form {
+        width: 80%;
+    }
+
+    .form-main-content {
+        row-gap: 5px;
+        column-gap: 5px;
     }
 }
 
