@@ -44,19 +44,21 @@ submitBtn.addEventListener("click", (e) => {
 
 let myLibrary = [];
 
-function Book(title, author, pages, read, color) {
-    this.title = title;
-    this.author = author;
-    this.pages = pages;
-    this.read = read;
-    this.color = color;
-}
+class Book {
+    constructor(title, author, pages, read, color) {
+        this.title = title;
+        this.author = author;
+        this.pages = pages;
+        this.read = read;
+        this.color = color;
+    }
 
-Book.prototype.toggleRead = function() {
-    if (this.read === "read") {
-        this.read = "unread";
-    } else {
-        this.read = "read";
+    toggleRead() {
+        if (this.read === "read") {
+            this.read = "unread";
+        } else {
+            this.read = "read";
+        }
     }
 }
 
