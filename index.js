@@ -62,10 +62,30 @@ function showError() {
     }
 }
 
+function checkAllValidInputs() {
+    if (!titleInput.validity.valid) {
+        return false; 
+    }
+    
+    if (!authorInput.validity.valid) {
+        return false; 
+    }
+
+    if (!pagesInput.validity.valid) {
+        return false; 
+    }
+
+    if (!readInput.validity.valid) {
+        return false; 
+    }
+   
+    return true;
+}
+
 form.addEventListener("submit", (e) => {
     e.preventDefault();
 
-    if (!titleInput.validity.valid) {
+    if (!checkAllValidInputs()) {
         showError();
     } else {
         error.style.display = "none";
