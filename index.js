@@ -5,6 +5,16 @@ const form = document.getElementsByClassName("form")[0];
 const submitBtn = document.getElementsByClassName("submit-btn")[0];
 const cancelBtn = document.getElementsByClassName("cancel-btn")[0];
 
+const titleInput = document.getElementById("title-input");
+const authorInput = document.getElementById("author-input");
+const pagesInput = document.getElementById("pages-input");
+const readInput = document.getElementById("read-input");
+
+const error = document.getElementsByClassName("error")[0];
+error.style.display = "none";
+
+const errorText = document.getElementsByClassName("error-text")[0];
+
 addBookBtn.addEventListener("click", () => {
     formContainer.style.display = "flex";
 });
@@ -36,11 +46,79 @@ function getUserValues() {
     return values;
 }
 
-submitBtn.addEventListener("click", (e) => {
+function showError() {
+    error.style.display = "flex";
+    if (titleInput.validity.valueMissing) {
+        errorText.textContent = "You must enter a title!";
+    }
+    if (authorInput.validity.valueMissing) {
+        errorText.textContent = "You must enter an author!";
+    }
+    if (pagesInput.validity.valueMissing) {
+        errorText.textContent = "You must enter a page number!";
+    }
+    if (readInput.validity.valueMissing) {
+        errorText.textContent = "You must select Read or Unread!";
+    }
+}
+
+form.addEventListener("submit", (e) => {
     e.preventDefault();
-    formContainer.style.display = "none";
-    addBookToLibrary(getUserValues());
+
+    if (!titleInput.validity.valid) {
+        showError();
+    } else {
+        error.style.display = "none";
+        formContainer.style.display = "none";
+        addBookToLibrary(getUserValues());
+    }
 });
+
+titleInput.addEventListener("input", (e) => {
+    if (titleInput.validity.valid) {
+        error.style.display = "none";
+        errorText.textContent = "";
+        errorText.className = "error-text";
+    } else {
+        showError();
+    }
+});
+
+authorInput.addEventListener("input", (e) => {
+    if (authorInput.validity.valid) {
+        error.style.display = "none";
+        errorText.textContent = "";
+        errorText.className = "error-text";
+    } else {
+        showError();
+    }
+});
+
+pagesInput.addEventListener("input", (e) => {
+    if (pagesInput.validity.valid) {
+        error.style.display = "none";
+        errorText.textContent = "";
+        errorText.className = "error-text";
+    } else {
+        showError();
+    }
+});
+
+readInput.addEventListener("input", (e) => {
+    if (readInput.validity.valid) {
+        error.style.display = "none";
+        errorText.textContent = "";
+        errorText.className = "error-text";
+    } else {
+        showError();
+    }
+});
+
+// submitBtn.addEventListener("click", (e) => {
+//     e.preventDefault();
+//     formContainer.style.display = "none";
+//     addBookToLibrary(getUserValues());
+// });
 
 let myLibrary = [];
 
