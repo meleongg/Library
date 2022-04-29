@@ -114,12 +114,6 @@ readInput.addEventListener("input", (e) => {
     }
 });
 
-// submitBtn.addEventListener("click", (e) => {
-//     e.preventDefault();
-//     formContainer.style.display = "none";
-//     addBookToLibrary(getUserValues());
-// });
-
 let myLibrary = [];
 
 class Book {
