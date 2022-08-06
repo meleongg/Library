@@ -1,8 +1,9 @@
+import { serviceFunctions } from "./services.js";
+
 const addBookBtn = document.getElementsByClassName("add-book-btn")[0];
 
 const formContainer = document.getElementsByClassName("form-container")[0];
 const form = document.getElementsByClassName("form")[0];
-const submitBtn = document.getElementsByClassName("submit-btn")[0];
 const cancelBtn = document.getElementsByClassName("cancel-btn")[0];
 
 const titleInput = document.getElementById("title-input");
@@ -14,6 +15,19 @@ const error = document.getElementsByClassName("error")[0];
 error.style.display = "none";
 
 const errorText = document.getElementsByClassName("error-text")[0];
+
+let myLibrary = [];
+
+const getBooks = async () => {
+    myLibrary = await serviceFunctions.getBooks();
+}
+
+const initBooks = async () => {
+    await getBooks();
+    render();
+}
+
+initBooks();
 
 addBookBtn.addEventListener("click", () => {
     formContainer.style.display = "flex";
@@ -134,43 +148,44 @@ readInput.addEventListener("input", (e) => {
     }
 });
 
-let myLibrary = [];
+// Old Book Class
 
-class Book {
-    constructor(title, author, pages, read, color) {
-        this.title = title;
-        this.author = author;
-        this.pages = pages;
-        this.read = read;
-        this.color = color;
-    }
+// class Book {
+//     constructor(title, author, pages, read, color) {
+//         this.title = title;
+//         this.author = author;
+//         this.pages = pages;
+//         this.read = read;
+//         this.color = color;
+//     }
 
-    toggleRead() {
-        if (this.read === "read") {
-            this.read = "unread";
-        } else {
-            this.read = "read";
-        }
-    }
-}
+//     toggleRead() {
+//         if (this.read === "read") {
+//             this.read = "unread";
+//         } else {
+//             this.read = "read";
+//         }
+//     }
+// }
 
-function addBookToLibrary(values) {
+async function addBookToLibrary (values) {
     let color = generateRandomColor()
-    book = new Book(values[0], values[1], values[2], values[3], color);
     const MAX_BOOKS = 12;
-    const alert = document.getElementsByClassName("alert")[0];
+    const alertElm = document.getElementsByClassName("alert")[0];
     const alertMsg = document.getElementsByClassName("alert-msg")[0];
     const main = document.getElementsByTagName("main")[0];
 
+    console.log(myLibrary);
+
     if (myLibrary.length < MAX_BOOKS) {
-        myLibrary.push(book);
+        await serviceFunctions.addBook(values[0], values[1], values[2], values[3], color);
         render();
-        alert.style.display = "block";
+        alertElm.style.display = "block";
         alertMsg.innerHTML = "Book has been added!";
         main.style.gridTemplateRows = "2fr 1fr 1fr 20fr";
         
         setTimeout (() => {
-            alert.style.display = "none";
+            alertElm.style.display = "none";
             main.style.gridTemplateRows = "2fr 1fr 20fr";
         }, 1500);
     } else {
@@ -214,38 +229,39 @@ function renderPages(book) {
     return cardPages;
 }
 
-function changeReadStatus(card) {
-    index = card.dataset.index;
-    book = myLibrary[index];
-    book.toggleRead();
+async function changeReadStatus(card) {
+    let id = card.id; 
+    await serviceFunctions.updateBookReadStatus(id);
     render();
 }
 
 function detectChangeStatus(btn) {
     btn.addEventListener("click", (e) => {
-        btnDiv = e.target.parentElement;
-        cardDiv = btnDiv.parentElement;
+        let btnDiv = e.target.parentElement;
+        let cardDiv = btnDiv.parentElement;
         changeReadStatus(cardDiv);
     })
 }
 
 function renderStatus(book) {
     let cardStatus = document.createElement("div");
-    cardStatusBtn = document.createElement("button");
+    let cardStatusBtn = document.createElement("button");
+    let readStr = book['read'][0].toUpperCase() + book['read'].substring(1);
+
     cardStatusBtn.classList.add("cardStatusBtn");
-    cardStatusBtn.innerHTML = book.read[0].toUpperCase() + book.read.substring(1);
+    cardStatusBtn.innerHTML = readStr;
     cardStatus.appendChild(cardStatusBtn);
     detectChangeStatus(cardStatusBtn);
 
     return cardStatus;
 }
 
-function deleteCard(card) {
+async function deleteCard(card) {
     const alert = document.getElementsByClassName("alert")[0];
     const alertMsg = document.getElementsByClassName("alert-msg")[0];
     const main = document.getElementsByTagName("main")[0];
-    index = card.dataset.index; 
-    myLibrary.splice(index, 1);
+    let id = card.id; 
+    await serviceFunctions.deleteBook(id);
     card.innerHTML = "";
     card.remove();
     render();
@@ -262,15 +278,15 @@ function deleteCard(card) {
 
 function detectDelete(btn) {
     btn.addEventListener("click", (e) => {
-        btnDiv = e.target.parentElement;
-        cardDiv = btnDiv.parentElement;
+        let btnDiv = e.target.parentElement;
+        let cardDiv = btnDiv.parentElement;
         deleteCard(cardDiv);
     })
 }
 
 function renderDelete() {
     let cardDelete = document.createElement("div");
-    cardDeleteBtn = document.createElement("button");
+    let cardDeleteBtn = document.createElement("button");
     cardDeleteBtn.classList.add("cardDeleteBtn");
     cardDeleteBtn.innerHTML = "Delete";
     cardDelete.appendChild(cardDeleteBtn);
@@ -299,26 +315,35 @@ function emptyRows(rows) {
     }
 }
 
-function render() {
+async function render() {
     const row1 = document.getElementsByClassName("row-1")[0];
     const row2 = document.getElementsByClassName("row-2")[0];
     const row3 = document.getElementsByClassName("row-3")[0];
 
-    rows = [row1, row2, row3];
+    let rows = [row1, row2, row3];
     emptyRows(rows);
+    await getBooks();
 
     for (let i=0; i<myLibrary.length; i++) {
-        let book = myLibrary[i];
+        let book = {};
+        let id;
+
+        for (const [bookId, bookObj] of Object.entries(myLibrary[i])) {
+            id = bookId; 
+            book = bookObj; 
+        }
+
         let card = document.createElement("div");
+        card.id = id; 
         card.dataset.index = i;
         card.classList.add("card");
         card.style.backgroundColor = book.color;
 
-        cardTitle = renderTitle(book);
-        cardAuthor = renderAuthor(book);
-        cardPages = renderPages(book);
-        cardStatus = renderStatus(book);
-        cardDelete = renderDelete();
+        let cardTitle = renderTitle(book);
+        let cardAuthor = renderAuthor(book);
+        let cardPages = renderPages(book);
+        let cardStatus = renderStatus(book);
+        let cardDelete = renderDelete();
 
         card.appendChild(cardTitle);
         card.appendChild(cardAuthor);
@@ -326,7 +351,7 @@ function render() {
         card.appendChild(cardStatus);
         card.appendChild(cardDelete);
 
-        row = findRow(rows);
+        let row = findRow(rows);
         row.appendChild(card);
     }
 }
